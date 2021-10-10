@@ -30,24 +30,33 @@ RegisterCommand('axon', function ()
     DeactivateAB3()
     ShowNotification("~y~Axon Body 3~s~ has ~r~stopped recording~s~.")
   else
-    if not Config:CommandAccessHandling() then
-      ShowNotification("You have to be ~r~on duty~s~ to enable ~y~Axon Body 3~s~.")
-    else
-      ActivateAB3()
-      ShowNotification("~y~Axon Body 3~s~ has ~g~started recording~s~.")
+    local server_id = GetPlayerServerId(PlayerId())
+    local player = exports.core_framework:getclientdept(server_id)
+    if(player ~= nil) then
+      if(player[server_id].dept ~= "Civilian") then
+        ActivateAB3(player[server_id].char_name  ..  " (" .. player[server_id].dept .. ")")
+        ShowNotification("~y~Axon Body 3~s~ has ~g~started recording~s~.")
+      else 
+        -- ShowNotification("You have to be ~r~on duty~s~ to enable ~y~Axon Body 3~s~.")
+      end
     end
   end
 end)
 
 RegisterCommand('axonon', function ()
-  if not Config:CommandAccessHandling() then
-    ShowNotification("You have to be ~r~on duty~s~ to use ~y~Axon Body 3~s~.")
-  else
-    if activated then
-      ShowNotification("~y~Axon Body 3~s~ is already ~g~recording~s~.")
-    else
-      ActivateAB3()
-      ShowNotification("~y~Axon Body 3~s~ has ~g~started recording~s~.")
+  local server_id = GetPlayerServerId(PlayerId())
+  local player = exports[Config.framework_name]:getclientdept(server_id)
+  if(player ~= nil) then
+    if(player[server_id].dept ~= "Civilian") then
+      if activated then
+        ShowNotification("~y~Axon Body 3~s~ is already ~g~recording~s~.")
+      else
+        
+        ActivateAB3(player[server_id].char_name  ..  " (" .. player[server_id].dept .. ")")
+        ShowNotification("~y~Axon Body 3~s~ has ~g~started recording~s~.")
+      end
+    else 
+      -- ShowNotification("You have to be ~r~on duty~s~ to use ~y~Axon Body 3~s~.")
     end
   end
 end)
@@ -99,7 +108,7 @@ end)
 
 -- Utils
 
-function ActivateAB3()
+function ActivateAB3(name)
   if activated then
     return error("AB3 attempted to activate when already active.")
   end
@@ -121,13 +130,13 @@ function ActivateAB3()
       Citizen.Wait(0)
       if (GetFollowPedCamViewMode() == 4 or Config.ThirdPersonMode) and not hudForceHide then
         if not hudPresence then
-          SetHudPresence(true)
+          SetHudPresence(true, name)
         end
       elseif hudPresence then
-        SetHudPresence(false)
+        SetHudPresence(false, name)
       end
     end
-    SetHudPresence(false)
+    SetHudPresence(false, name)
   end)
 end
 
@@ -139,8 +148,8 @@ function DeactivateAB3()
   activated = false
 end
 
-function SetHudPresence(state)
-  SendNUIMessage({AxonUIPresence = state})
+function SetHudPresence(state, charname)
+  SendNUIMessage({AxonUIPresence = state, name = charname})
   hudPresence = state
 end
 
