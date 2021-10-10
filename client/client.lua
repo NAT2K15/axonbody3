@@ -116,13 +116,13 @@ function ActivateAB3(name)
   activated = true
 
   -- beeper
-  Citizen.CreateThread(function()
-    Citizen.Wait(12e4)
-    while activated do
-      TriggerServerEvent("AB3:ClientBeep")
-      Citizen.Wait(12e4)
-    end
-  end)
+  -- Citizen.CreateThread(function()
+  --   Citizen.Wait(12e4)
+  --   while activated do
+  --     TriggerServerEvent("AB3:ClientBeep")
+  --     Citizen.Wait(12e4)
+  --   end
+  -- end)
 
   -- HUD
   Citizen.CreateThread(function()
