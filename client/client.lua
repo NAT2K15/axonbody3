@@ -31,7 +31,7 @@ RegisterCommand('axon', function ()
     ShowNotification("~y~Axon Body 3~s~ has ~r~stopped recording~s~.")
   else
     local server_id = GetPlayerServerId(PlayerId())
-    local player = exports.core_framework:getclientdept(server_id)
+    local player = exports[Config.framework_name]:getclientdept(server_id)
     if(player ~= nil) then
       if(player[server_id].dept ~= "Civilian") then
         ActivateAB3(player[server_id].char_name  ..  " (" .. player[server_id].dept .. ")")
